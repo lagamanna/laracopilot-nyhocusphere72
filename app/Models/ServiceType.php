@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ServiceType extends Model
+{
+    protected $fillable = ['name', 'description', 'price', 'active'];
+    
+    protected $casts = [
+        'price' => 'decimal:2',
+        'active' => 'boolean'
+    ];
+    
+    public function serviceRequests()
+    {
+        return $this->hasMany(ServiceRequest::class);
+    }
+}
