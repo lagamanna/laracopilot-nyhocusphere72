@@ -1,174 +1,157 @@
-@extends('layouts.user')
-
-@section('title', 'Dashboard')
+@extends('layouts.app')
 
 @section('content')
-<!-- Welcome Banner -->
-<div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-8 mb-6 text-white">
-    <h1 class="text-3xl font-bold mb-2">Welcome back, {{ session('user_name', 'User') }}!</h1>
-    <p class="text-blue-100">Manage your service requests and track their progress from your dashboard.</p>
-</div>
-
-<!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Total Requests</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $totalRequests ?? 0 }}</p>
-            </div>
-            <div class="bg-blue-100 p-4 rounded-full">
-                <i class="fas fa-file-alt text-blue-600 text-2xl"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Pending</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $pendingRequests ?? 0 }}</p>
-            </div>
-            <div class="bg-yellow-100 p-4 rounded-full">
-                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Completed</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $completedRequests ?? 0 }}</p>
-            </div>
-            <div class="bg-green-100 p-4 rounded-full">
-                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Documents</p>
-                <p class="text-3xl font-bold text-gray-800">{{ $totalDocuments ?? 0 }}</p>
-            </div>
-            <div class="bg-purple-100 p-4 rounded-full">
-                <i class="fas fa-folder text-purple-600 text-2xl"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Quick Actions -->
-<div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="{{ route('user.requests.create') }}" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
-            <div class="bg-blue-600 p-3 rounded-full mr-4">
-                <i class="fas fa-plus text-white text-xl"></i>
-            </div>
-            <div>
-                <p class="font-semibold text-gray-800">New Request</p>
-                <p class="text-sm text-gray-600">Submit a service request</p>
-            </div>
-        </a>
-
-        <a href="{{ route('user.documents.index') }}" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
-            <div class="bg-green-600 p-3 rounded-full mr-4">
-                <i class="fas fa-upload text-white text-xl"></i>
-            </div>
-            <div>
-                <p class="font-semibold text-gray-800">Upload Documents</p>
-                <p class="text-sm text-gray-600">Upload required files</p>
-            </div>
-        </a>
-
-        <a href="{{ route('user.schedule.index') }}" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
-            <div class="bg-purple-600 p-3 rounded-full mr-4">
-                <i class="fas fa-calendar text-white text-xl"></i>
-            </div>
-            <div>
-                <p class="font-semibold text-gray-800">Schedule Call</p>
-                <p class="text-sm text-gray-600">Book consultation</p>
-            </div>
-        </a>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Recent Requests -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Recent Requests</h2>
-            <a href="{{ route('user.requests.index') }}" class="text-blue-600 hover:underline text-sm">View All</a>
-        </div>
-        @if(isset($recentRequests) && count($recentRequests) > 0)
-            <div class="space-y-3">
-                @foreach($recentRequests as $request)
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow transition">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-semibold text-gray-800">#{{ str_pad($request->id, 5, '0', STR_PAD_LEFT) }}</span>
-                        <span class="px-2 py-1 rounded-full text-xs font-semibold 
-                            @if($request->status === 'pending') bg-yellow-100 text-yellow-800
-                            @elseif($request->status === 'approved') bg-blue-100 text-blue-800
-                            @elseif($request->status === 'completed') bg-green-100 text-green-800
-                            @else bg-gray-100 text-gray-800 @endif">
-                            {{ ucfirst($request->status) }}
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-1">{{ $request->service_type ?? 'Service Request' }}</p>
-                    <p class="text-xs text-gray-500">{{ $request->created_at->format('M d, Y') }}</p>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div class="container mx-auto px-4">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Welcome back, {{ session('user_name') }}!</h1>
+                    <p class="text-gray-600 mt-2">Manage your service requests and track your progress</p>
                 </div>
-                @endforeach
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-full">
+                    <i class="fas fa-user-circle text-white text-4xl"></i>
+                </div>
             </div>
-        @else
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-file-alt text-4xl mb-3 text-gray-300"></i>
-                <p>No requests yet. Create your first request!</p>
-                <a href="{{ route('user.requests.create') }}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
-                    <i class="fas fa-plus mr-2"></i>New Request
-                </a>
-            </div>
-        @endif
-    </div>
-
-    <!-- Upcoming Calls -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Upcoming Calls</h2>
-            <a href="{{ route('user.schedule.index') }}" class="text-blue-600 hover:underline text-sm">View All</a>
         </div>
-        @if(isset($upcomingCalls) && count($upcomingCalls) > 0)
-            <div class="space-y-3">
-                @foreach($upcomingCalls as $call)
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow transition">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-semibold text-gray-800">{{ $call->purpose ?? 'Consultation' }}</span>
-                        <span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                            Scheduled
-                        </span>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-semibold">Total Requests</p>
+                        <p class="text-3xl font-bold text-gray-800">{{ $totalRequests }}</p>
                     </div>
-                    <div class="flex items-center text-sm text-gray-600 mb-1">
-                        <i class="fas fa-calendar mr-2"></i>
-                        <span>{{ $call->scheduled_date }}</span>
-                    </div>
-                    <div class="flex items-center text-sm text-gray-600">
-                        <i class="fas fa-clock mr-2"></i>
-                        <span>{{ $call->scheduled_time }}</span>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-clipboard-list text-blue-600 text-2xl"></i>
                     </div>
                 </div>
-                @endforeach
             </div>
-        @else
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-calendar text-4xl mb-3 text-gray-300"></i>
-                <p>No upcoming calls scheduled.</p>
-                <a href="{{ route('user.schedule.index') }}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
-                    <i class="fas fa-calendar-plus mr-2"></i>Schedule Call
+
+            <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-semibold">Pending</p>
+                        <p class="text-3xl font-bold text-yellow-600">{{ $pendingRequests }}</p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-semibold">Approved</p>
+                        <p class="text-3xl font-bold text-green-600">{{ $approvedRequests }}</p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-semibold">Completed</p>
+                        <p class="text-3xl font-bold text-blue-600">{{ $completedRequests }}</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-check-double text-blue-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="{{ route('user.requests.create') }}" 
+                   class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-plus-circle text-2xl"></i>
+                    <span>New Service Request</span>
+                </a>
+                <a href="{{ route('user.requests.index') }}" 
+                   class="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-list-alt text-2xl"></i>
+                    <span>View My Requests</span>
+                </a>
+                <a href="{{ route('user.documents.index') }}" 
+                   class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-folder-open text-2xl"></i>
+                    <span>My Documents</span>
                 </a>
             </div>
-        @endif
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Recent Requests</h2>
+                <a href="{{ route('user.requests.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            
+            @if($recentRequests->count() > 0)
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($recentRequests as $request)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $request->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $request->serviceType->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($request->title, 40) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                    @if($request->status === 'pending') bg-yellow-100 text-yellow-800
+                                    @elseif($request->status === 'approved') bg-green-100 text-green-800
+                                    @elseif($request->status === 'rejected') bg-red-100 text-red-800
+                                    @elseif($request->status === 'completed') bg-blue-100 text-blue-800
+                                    @else bg-gray-100 text-gray-800 @endif">
+                                    {{ ucfirst($request->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $request->created_at->format('M d, Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ route('user.requests.show', $request->id) }}" 
+                                   class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-eye mr-1"></i>View
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @else
+            <div class="text-center py-12">
+                <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+                <p class="text-gray-500 text-lg mb-4">No service requests yet</p>
+                <a href="{{ route('user.requests.create') }}" 
+                   class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                    <i class="fas fa-plus-circle mr-2"></i>Create Your First Request
+                </a>
+            </div>
+            @endif
+        </div>
     </div>
 </div>
 @endsection
