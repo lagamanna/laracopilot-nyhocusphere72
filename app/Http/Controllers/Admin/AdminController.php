@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Models\User;
+use App\Models\ServiceType;
 use App\Models\Document;
-use App\Models\CallSchedule;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,46 +17,62 @@ class AdminController extends Controller
             return redirect()->route('admin.login');
         }
         
-        // KPI Calculations
+        // Service Request Statistics
         $totalRequests = ServiceRequest::count();
         $pendingRequests = ServiceRequest::where('status', 'pending')->count();
+        $approvedRequests = ServiceRequest::where('status', 'approved')->count();
+        $rejectedRequests = ServiceRequest::where('status', 'rejected')->count();
         $completedRequests = ServiceRequest::where('status', 'completed')->count();
-        $totalRevenue = Payment::where('payment_status', 'completed')->sum('amount');
+        $inProgressRequests = ServiceRequest::where('status', 'in_progress')->count();
         
-        // Recent Service Requests
-        $recentRequests = ServiceRequest::with('user')
+        // User Statistics
+        $totalUsers = User::count();
+        $activeUsers = User::where('status', 'active')->count();
+        
+        // Service Types
+        $totalServiceTypes = ServiceType::count();
+        $activeServiceTypes = ServiceType::where('active', true)->count();
+        
+        // Documents
+        $totalDocuments = Document::count();
+        $pendingDocuments = Document::where('status', 'pending')->count();
+        
+        // Recent Activities
+        $recentRequests = ServiceRequest::with(['user', 'serviceType'])
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit(10)
             ->get();
         
-        // Pending Documents for Verification
-        $pendingDocuments = Document::where('verification_status', 'pending')
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
+        // Requests by Status for Chart
+        $requestsByStatus = [
+            'pending' => $pendingRequests,
+            'approved' => $approvedRequests,
+            'rejected' => $rejectedRequests,
+            'in_progress' => $inProgressRequests,
+            'completed' => $completedRequests
+        ];
         
-        // Upcoming Scheduled Calls
-        $upcomingCalls = CallSchedule::with('user')
-            ->where('scheduled_date', '>=', now()->toDateString())
-            ->orderBy('scheduled_date', 'asc')
-            ->orderBy('scheduled_time', 'asc')
-            ->limit(5)
-            ->get();
-        
-        // Recent Payments
-        $recentPayments = Payment::orderBy('created_at', 'desc')
+        // Recent Users
+        $recentUsers = User::orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
         
         return view('admin.dashboard', compact(
             'totalRequests',
             'pendingRequests',
+            'approvedRequests',
+            'rejectedRequests',
             'completedRequests',
-            'totalRevenue',
-            'recentRequests',
+            'inProgressRequests',
+            'totalUsers',
+            'activeUsers',
+            'totalServiceTypes',
+            'activeServiceTypes',
+            'totalDocuments',
             'pendingDocuments',
-            'upcomingCalls',
-            'recentPayments'
+            'recentRequests',
+            'requestsByStatus',
+            'recentUsers'
         ));
     }
 }

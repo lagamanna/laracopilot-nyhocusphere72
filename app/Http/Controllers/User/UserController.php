@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use App\Models\Document;
-use App\Models\CallSchedule;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -18,33 +17,35 @@ class UserController extends Controller
         
         $userId = session('user_id');
         
-        // KPI Calculations
+        // Get statistics
         $totalRequests = ServiceRequest::where('user_id', $userId)->count();
-        $pendingRequests = ServiceRequest::where('user_id', $userId)->where('status', 'pending')->count();
-        $completedRequests = ServiceRequest::where('user_id', $userId)->where('status', 'completed')->count();
-        $totalDocuments = Document::where('user_id', $userId)->count();
+        $pendingRequests = ServiceRequest::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
+        $approvedRequests = ServiceRequest::where('user_id', $userId)
+            ->where('status', 'approved')
+            ->count();
+        $completedRequests = ServiceRequest::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->count();
+        $rejectedRequests = ServiceRequest::where('user_id', $userId)
+            ->where('status', 'rejected')
+            ->count();
         
-        // Recent Service Requests
+        // Get recent requests
         $recentRequests = ServiceRequest::where('user_id', $userId)
+            ->with('serviceType')
             ->orderBy('created_at', 'desc')
             ->limit(5)
-            ->get();
-        
-        // Upcoming Scheduled Calls
-        $upcomingCalls = CallSchedule::where('user_id', $userId)
-            ->where('scheduled_date', '>=', now()->toDateString())
-            ->orderBy('scheduled_date', 'asc')
-            ->orderBy('scheduled_time', 'asc')
-            ->limit(3)
             ->get();
         
         return view('user.dashboard', compact(
             'totalRequests',
             'pendingRequests',
+            'approvedRequests',
             'completedRequests',
-            'totalDocuments',
-            'recentRequests',
-            'upcomingCalls'
+            'rejectedRequests',
+            'recentRequests'
         ));
     }
 }

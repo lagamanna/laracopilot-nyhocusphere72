@@ -1,197 +1,191 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin Dashboard')
-
 @section('content')
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
-    <p class="text-gray-600 mt-2">Welcome back, {{ session('admin_user', 'Admin') }}!</p>
-</div>
+<div class="container mx-auto px-4 py-8">
+    <!-- Welcome Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+        <p class="text-gray-600 mt-2">Welcome back, {{ session('admin_user') }}! Here's your overview.</p>
+    </div>
 
-<!-- KPI Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-blue-500">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-gray-500 text-sm font-semibold uppercase">Total Requests</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalRequests }}</p>
-                <p class="text-sm text-green-600 mt-2"><i class="fas fa-arrow-up"></i> Active requests</p>
+    <!-- Main Statistics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Total Service Requests -->
+        <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold">Total Requests</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $totalRequests }}</p>
+                    <p class="text-sm text-gray-600 mt-1">All time</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-full">
+                    <i class="fas fa-clipboard-list text-blue-600 text-2xl"></i>
+                </div>
             </div>
-            <div class="bg-blue-100 p-3 rounded-full">
-                <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold">Pending Review</p>
+                    <p class="text-3xl font-bold text-yellow-600">{{ $pendingRequests }}</p>
+                    <p class="text-sm text-gray-600 mt-1">Needs attention</p>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-full">
+                    <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Users -->
+        <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold">Total Users</p>
+                    <p class="text-3xl font-bold text-green-600">{{ $totalUsers }}</p>
+                    <p class="text-sm text-gray-600 mt-1">{{ $activeUsers }} active</p>
+                </div>
+                <div class="bg-green-100 p-4 rounded-full">
+                    <i class="fas fa-users text-green-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Requests -->
+        <div class="bg-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold">Completed</p>
+                    <p class="text-3xl font-bold text-blue-600">{{ $completedRequests }}</p>
+                    <p class="text-sm text-gray-600 mt-1">Successfully done</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-full">
+                    <i class="fas fa-check-circle text-blue-600 text-2xl"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-yellow-500">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-gray-500 text-sm font-semibold uppercase">Pending Review</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">{{ $pendingRequests }}</p>
-                <p class="text-sm text-yellow-600 mt-2"><i class="fas fa-clock"></i> Needs attention</p>
+    <!-- Request Status Breakdown -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-yellow-600">{{ $pendingRequests }}</p>
+                <p class="text-sm text-gray-600">Pending</p>
             </div>
-            <div class="bg-yellow-100 p-3 rounded-full">
-                <i class="fas fa-hourglass-half text-2xl text-yellow-600"></i>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-green-600">{{ $approvedRequests }}</p>
+                <p class="text-sm text-gray-600">Approved</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-purple-600">{{ $inProgressRequests }}</p>
+                <p class="text-sm text-gray-600">In Progress</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-red-600">{{ $rejectedRequests }}</p>
+                <p class="text-sm text-gray-600">Rejected</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-blue-600">{{ $completedRequests }}</p>
+                <p class="text-sm text-gray-600">Completed</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-gray-500 text-sm font-semibold uppercase">Completed</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">{{ $completedRequests }}</p>
-                <p class="text-sm text-green-600 mt-2"><i class="fas fa-check-circle"></i> This month</p>
-            </div>
-            <div class="bg-green-100 p-3 rounded-full">
-                <i class="fas fa-check-double text-2xl text-green-600"></i>
-            </div>
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ route('admin.service-requests.index', ['status' => 'pending']) }}" 
+               class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                <i class="fas fa-tasks text-2xl"></i>
+                <span>Review Pending Requests</span>
+            </a>
+            <a href="{{ route('admin.service-requests.index') }}" 
+               class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                <i class="fas fa-list-alt text-2xl"></i>
+                <span>All Service Requests</span>
+            </a>
+            <a href="{{ route('admin.service-requests.index', ['status' => 'approved']) }}" 
+               class="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center space-x-3 transition duration-300 transform hover:scale-105">
+                <i class="fas fa-check-double text-2xl"></i>
+                <span>Approved Requests</span>
+            </a>
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-purple-500">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-gray-500 text-sm font-semibold uppercase">Total Revenue</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2">${{ number_format($totalRevenue, 2) }}</p>
-                <p class="text-sm text-purple-600 mt-2"><i class="fas fa-dollar-sign"></i> All time</p>
-            </div>
-            <div class="bg-purple-100 p-3 rounded-full">
-                <i class="fas fa-coins text-2xl text-purple-600"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Recent Requests -->
     <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Service Requests</h2>
-        <div class="space-y-3">
-            @forelse($recentRequests as $request)
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                <div class="flex items-center">
-                    <div class="bg-indigo-100 p-2 rounded-full mr-3">
-                        <i class="fas fa-file-alt text-indigo-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-800">#{{ str_pad($request->id, 5, '0', STR_PAD_LEFT) }}</p>
-                        <p class="text-sm text-gray-600">{{ $request->user->name ?? 'N/A' }}</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                        @if($request->status === 'completed') bg-green-100 text-green-800
-                        @elseif($request->status === 'approved') bg-blue-100 text-blue-800
-                        @elseif($request->status === 'in_review') bg-yellow-100 text-yellow-800
-                        @elseif($request->status === 'pending') bg-orange-100 text-orange-800
-                        @else bg-gray-100 text-gray-800 @endif">
-                        {{ ucfirst(str_replace('_', ' ', $request->status)) }}
-                    </span>
-                    <p class="text-xs text-gray-500 mt-1">{{ $request->created_at->diffForHumans() }}</p>
-                </div>
-            </div>
-            @empty
-            <p class="text-gray-500 text-center py-8">No recent requests</p>
-            @endforelse
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Recent Service Requests</h2>
+            <a href="{{ route('admin.service-requests.index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                View All <i class="fas fa-arrow-right ml-1"></i>
+            </a>
         </div>
-        <a href="{{ route('admin.service-requests.index') }}" class="block text-center mt-4 text-indigo-600 hover:underline font-semibold">
-            View All Requests <i class="fas fa-arrow-right ml-1"></i>
-        </a>
-    </div>
-
-    <!-- Pending Documents -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Pending Document Verification</h2>
-        <div class="space-y-3">
-            @forelse($pendingDocuments as $document)
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                <div class="flex items-center">
-                    <div class="bg-red-100 p-2 rounded-full mr-3">
-                        <i class="fas fa-file-pdf text-red-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-800">{{ ucfirst(str_replace('_', ' ', $document->document_type)) }}</p>
-                        <p class="text-sm text-gray-600">Request #{{ str_pad($document->service_request_id, 5, '0', STR_PAD_LEFT) }}</p>
-                    </div>
-                </div>
-                <a href="{{ route('admin.documents.verify', $document->id) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-semibold transition">
-                    Verify
-                </a>
-            </div>
-            @empty
-            <p class="text-gray-500 text-center py-8">All documents verified</p>
-            @endforelse
+        
+        @if($recentRequests->count() > 0)
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($recentRequests as $request)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $request->id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $request->user->name }}</div>
+                            <div class="text-sm text-gray-500">{{ $request->user->email }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $request->serviceType->name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($request->title, 40) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                @if($request->status === 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($request->status === 'approved') bg-green-100 text-green-800
+                                @elseif($request->status === 'rejected') bg-red-100 text-red-800
+                                @elseif($request->status === 'completed') bg-blue-100 text-blue-800
+                                @else bg-gray-100 text-gray-800 @endif">
+                                {{ ucfirst($request->status) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $request->created_at->format('M d, Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{{ route('admin.service-requests.show', $request->id) }}" 
+                               class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-eye mr-1"></i>Review
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-        <a href="{{ route('admin.documents.index') }}" class="block text-center mt-4 text-indigo-600 hover:underline font-semibold">
-            View All Documents <i class="fas fa-arrow-right ml-1"></i>
-        </a>
-    </div>
-</div>
-
-<!-- Upcoming Calls & Recent Payments -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Upcoming Calls -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Upcoming Scheduled Calls</h2>
-        <div class="space-y-3">
-            @forelse($upcomingCalls as $call)
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center">
-                    <div class="bg-green-100 p-2 rounded-full mr-3">
-                        <i class="fas fa-phone text-green-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-800">{{ $call->user->name ?? 'N/A' }}</p>
-                        <p class="text-sm text-gray-600">{{ $call->contact_number }}</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm font-semibold text-gray-800">{{ \Carbon\Carbon::parse($call->scheduled_date)->format('M d, Y') }}</p>
-                    <p class="text-xs text-gray-600">{{ \Carbon\Carbon::parse($call->scheduled_time)->format('h:i A') }}</p>
-                </div>
-            </div>
-            @empty
-            <p class="text-gray-500 text-center py-8">No upcoming calls</p>
-            @endforelse
+        @else
+        <div class="text-center py-12">
+            <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+            <p class="text-gray-500 text-lg">No recent service requests</p>
         </div>
-        <a href="{{ route('admin.call-schedule.index') }}" class="block text-center mt-4 text-indigo-600 hover:underline font-semibold">
-            View All Calls <i class="fas fa-arrow-right ml-1"></i>
-        </a>
-    </div>
-
-    <!-- Recent Payments -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Payments</h2>
-        <div class="space-y-3">
-            @forelse($recentPayments as $payment)
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div class="flex items-center">
-                    <div class="bg-purple-100 p-2 rounded-full mr-3">
-                        <i class="fas fa-credit-card text-purple-600"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-800">${{ number_format($payment->amount, 2) }}</p>
-                        <p class="text-sm text-gray-600">{{ ucfirst($payment->payment_method) }}</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                        @if($payment->payment_status === 'completed') bg-green-100 text-green-800
-                        @elseif($payment->payment_status === 'pending') bg-yellow-100 text-yellow-800
-                        @else bg-red-100 text-red-800 @endif">
-                        {{ ucfirst($payment->payment_status) }}
-                    </span>
-                    <p class="text-xs text-gray-500 mt-1">{{ $payment->created_at->diffForHumans() }}</p>
-                </div>
-            </div>
-            @empty
-            <p class="text-gray-500 text-center py-8">No recent payments</p>
-            @endforelse
-        </div>
-        <a href="{{ route('admin.payments.index') }}" class="block text-center mt-4 text-indigo-600 hover:underline font-semibold">
-            View All Payments <i class="fas fa-arrow-right ml-1"></i>
-        </a>
+        @endif
     </div>
 </div>
 @endsection
